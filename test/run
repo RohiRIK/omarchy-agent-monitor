@@ -1,0 +1,30 @@
+#!/bin/bash
+#
+# Aggregated test runner for the Agent Monitor plugin.
+# Runs every suite, continuing past failures so each one reports.
+
+set -euo pipefail
+
+ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+TEST_DIR="$ROOT/test"
+
+failed=0
+
+run() {
+  local label="$1"
+  shift
+  printf '==> %s\n' "$label"
+  if ! "$@"; then
+    failed=1
+  fi
+}
+
+run "Collector" python3 "$TEST_DIR/collector.test.py" -v
+run "Manifest and plugin layout" bash "$TEST_DIR/manifest.test.sh"
+
+if [[ $failed -ne 0 ]]; then
+  printf '\nSome tests failed.\n' >&2
+  exit 1
+fi
+
+printf '\nAll tests passed.\n'

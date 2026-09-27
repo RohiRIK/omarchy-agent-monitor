@@ -81,6 +81,10 @@ rm -rf ~/.local/state/omarchy/agent-monitor ~/.config/omarchy/agent-monitor
 
 The plugin writes nothing else to your system.
 
+## Development
+
+Run the tests with `test/run`. They need Python 3 and run the collector against a throwaway home directory, so they never touch your real agent data.
+
 ## License
 
 MIT. Derived from Omarchy's built-in `omarchy.agents` plugin. Provider logos belong to their owners; see [LICENSE](LICENSE).
