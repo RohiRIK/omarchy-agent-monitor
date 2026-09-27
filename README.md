@@ -15,10 +15,6 @@ It builds on Omarchy's built-in Agents panel and adds installed-agent discovery,
 - Detects which agents are installed, including mise launcher shims that aren't installed yet.
 - Turn monitoring on or off per agent from the panel.
 
-<table>
-<tr><td><img src="docs/dashboard.png" alt="Dashboard with limits and today's activity"></td><td><img src="docs/advanced.png" alt="Advanced view with recorded usage and tokens by day"></td><td><img src="docs/settings.png" alt="Per-agent monitoring settings"></td></tr>
-</table>
-
 ## Requirements
 
 - Omarchy Quattro with its Quickshell shell.
