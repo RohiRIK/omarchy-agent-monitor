@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "rohirik.agent-monitor",
+  "name": "Agent Monitor",
+  "version": "1.0.0",
+  "author": "RohiRIK",
+  "license": "MIT",
+  "description": "AI coding agent dashboard: subscription limits, daily activity, and model usage for Claude Code, Codex, OpenCode, Hermes, pi, OpenRouter, and more.",
+  "repository": "https://github.com/RohiRIK/omarchy-agent-monitor",
+  "kinds": [
+    "bar-widget"
+  ],
+  "activation": "on-demand",
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Agent Monitor",
+    "description": "Subscription limits, daily activity, and model usage for your AI coding agents.",
+    "category": "AI",
+    "aliases": [
+      "agent-monitor",
+      "agents-monitor"
+    ],
+    "allowMultiple": false,
+    "defaults": {
+      "refreshIntervalSec": 900
+    }
+  }
+}
