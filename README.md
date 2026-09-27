@@ -4,6 +4,8 @@ An Omarchy Quattro bar widget for your AI coding agents. It shows subscription l
 
 It builds on Omarchy's built-in Agents panel and adds installed-agent discovery, local usage for more agents, per-agent monitoring toggles, and an advanced view.
 
+![Dashboard, advanced view, and monitoring settings](preview.png)
+
 ## Features
 
 - Subscription tier and rolling limit windows with reset countdowns for Claude Code and Codex, from Omarchy's own `omarchy agent usage update`.
@@ -12,6 +14,10 @@ It builds on Omarchy's built-in Agents panel and adds installed-agent discovery,
 - OpenRouter credit balance (remaining, funded, spent), using an API key you provide.
 - Detects which agents are installed, including mise launcher shims that aren't installed yet.
 - Turn monitoring on or off per agent from the panel.
+
+<table>
+<tr><td><img src="docs/dashboard.png" alt="Dashboard with limits and today's activity"></td><td><img src="docs/advanced.png" alt="Advanced view with recorded usage and tokens by day"></td><td><img src="docs/settings.png" alt="Per-agent monitoring settings"></td></tr>
+</table>
 
 ## Requirements
 
