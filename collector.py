@@ -211,10 +211,30 @@ def read_local(agent_id, record):
         if not path.exists(): return
         with sqlite3.connect(path.as_uri()+"?mode=ro", uri=True, timeout=2) as conn:
             conn.execute("PRAGMA query_only=ON")
-            for sid, raw in conn.execute("SELECT session_id, data FROM message"):
+            tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+            # OpenCode v2 stores messages in session_message with a typed "data"
+            # column; older releases used the flat message table.
+            has_v2 = "session_message" in tables and conn.execute(
+                "SELECT 1 FROM session_message LIMIT 1").fetchone() is not None
+            rows = conn.execute(
+                "SELECT session_id, type, data FROM session_message WHERE type IN ('user', 'assistant')"
+                if has_v2 else "SELECT session_id, data FROM message")
+            for row in rows:
                 try:
-                    m=json.loads(raw); u=m.get("tokens") or {}; cache=u.get("cache") or {}
-                    add(sid, (m.get("time") or {}).get("created"), m.get("role"), m.get("modelID"),
+                    if has_v2:
+                        sid, role, raw = row
+                    else:
+                        sid, raw = row
+                        role = None
+                    m = json.loads(raw)
+                    if role is None:
+                        role = m.get("role")
+                    model = m.get("modelID")
+                    if not model:
+                        model_info = m.get("model") or {}
+                        model = model_info.get("id") if isinstance(model_info, dict) else model_info
+                    u = m.get("tokens") or {}; cache = u.get("cache") or {}
+                    add(sid, (m.get("time") or {}).get("created"), role, model,
                         [u.get("input",0), (u.get("output") or 0)+(u.get("reasoning") or 0), cache.get("read",0), cache.get("write",0)])
                 except (ValueError, TypeError, AttributeError): continue
     elif agent_id == "hermes":

@@ -139,6 +139,30 @@ class CollectorTest(unittest.TestCase):
         self.assertEqual(record["modelUsage"]["oc-model"]["outputTokens"], 6)
         self.assertEqual(db.stat().st_mtime_ns, before)
 
+    def test_opencode_v2_database_is_counted(self):
+        self.stub("opencode")
+        db = self.data / "opencode/opencode.db"
+        db.parent.mkdir(parents=True)
+        created = int(dt.datetime.now().timestamp() * 1000)
+        with sqlite3.connect(db) as conn:
+            conn.execute("CREATE TABLE message (session_id TEXT, data TEXT)")
+            conn.execute("CREATE TABLE session_message (session_id TEXT, type TEXT, data TEXT)")
+            conn.execute("INSERT INTO session_message VALUES (?, ?, ?)", ("s1", "user", json.dumps(
+                {"time": {"created": created}})))
+            conn.execute("INSERT INTO session_message VALUES (?, ?, ?)", ("s1", "assistant", json.dumps({
+                "model": {"id": "oc-v2-model", "providerID": "opencode"},
+                "time": {"created": created},
+                "tokens": {"input": 10, "output": 4, "reasoning": 2, "cache": {"read": 3, "write": 0}}})))
+            conn.execute("INSERT INTO session_message VALUES (?, ?, ?)", ("s1", "idle", json.dumps(
+                {"time": {"created": created}})))
+        conn.close()
+
+        self.collect("opencode")
+        record = self.record("opencode")
+        self.assertEqual(record["totalPrompts"], 1)
+        self.assertEqual(record["todayTotalTokens"], 19)
+        self.assertEqual(record["modelUsage"]["oc-v2-model"]["outputTokens"], 6)
+
     def test_installed_agent_without_usage_source_says_so(self):
         self.stub("opencode")
         self.collect("opencode")
